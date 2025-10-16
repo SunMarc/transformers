@@ -774,6 +774,7 @@ class ProcessorMixin(PushToHubMixin):
             kwargs (`dict[str, Any]`, *optional*):
                 Additional key word arguments passed along to the [`~utils.PushToHubMixin.push_to_hub`] method.
         """
+        save_jinja_files = kwargs.pop("save_jinja_files", True)
         os.makedirs(save_directory, exist_ok=True)
 
         if push_to_hub:
