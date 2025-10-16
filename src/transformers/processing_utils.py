@@ -789,8 +789,6 @@ class ProcessorMixin(PushToHubMixin):
             configs.append(self)
             custom_object_save(self, save_directory, config=configs)
 
-        save_jinja_files = kwargs.get("save_jinja_files", True)
-
         for attribute_name in self.attributes:
             # Save the tokenizer in its own vocab file. The other attributes are saved as part of `processor_config.json`
             if attribute_name == "tokenizer":
@@ -826,7 +824,6 @@ class ProcessorMixin(PushToHubMixin):
         # Save `chat_template` in its own file. We can't get it from `processor_dict` as we popped it in `to_dict`
         # to avoid serializing chat template in json config file. So let's get it from `self` directly
         if self.chat_template is not None:
-            save_jinja_files = kwargs.get("save_jinja_files", True)
             is_single_template = isinstance(self.chat_template, str)
             if save_jinja_files and is_single_template:
                 # New format for single templates is to save them as chat_template.jinja
@@ -985,6 +982,7 @@ class ProcessorMixin(PushToHubMixin):
                         cache_dir=cache_dir,
                         token=token,
                     ):
+                        template = template.removesuffix(".jinja")
                         additional_chat_template_files[template] = f"{CHAT_TEMPLATE_DIR}/{template}.jinja"
                 except EntryNotFoundError:
                     pass  # No template dir means no template files
